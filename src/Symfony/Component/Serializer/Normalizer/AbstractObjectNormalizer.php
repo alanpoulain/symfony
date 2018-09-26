@@ -86,7 +86,7 @@ abstract class AbstractObjectNormalizer extends AbstractNormalizer
         $data = array();
         $stack = array();
         $attributes = $this->getAttributes($object, $format, $context);
-        $class = \get_class($object);
+        $class = $this->getObjectClass($object);
         $attributesMetadata = $this->classMetadataFactory ? $this->classMetadataFactory->getMetadataFor($class)->getAttributesMetadata() : null;
 
         foreach ($attributes as $attribute) {
@@ -155,7 +155,7 @@ abstract class AbstractObjectNormalizer extends AbstractNormalizer
      */
     protected function getAttributes($object, $format = null, array $context)
     {
-        $class = \get_class($object);
+        $class = $this->getObjectClass($object);
         $key = $class.'-'.$context['cache_key'];
 
         if (isset($this->attributesCache[$key])) {
@@ -282,6 +282,18 @@ abstract class AbstractObjectNormalizer extends AbstractNormalizer
      * @param array       $context
      */
     abstract protected function setAttributeValue($object, $attribute, $value, $format = null, array $context = array());
+
+    /**
+     * Get class name of the given object.
+     *
+     * @param object $object
+     *
+     * @return string
+     */
+    protected function getObjectClass($object)
+    {
+        return \get_class($object);
+    }
 
     /**
      * Validates the submitted data and denormalizes it.
